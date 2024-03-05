@@ -125,11 +125,11 @@ func DeleteDataFromServer(address string, deleteFile string) (string, error) {
 		Timeout:   time.Second * 5,
 	}
 
-	baseUrl := fmt.Sprintf("https://%s", address)
+	baseURL := fmt.Sprintf("https://%s", address)
 	resource := "delete"
 	data := url.Values{}
 	data.Add("filename", deleteFile)
-	URI, _ := url.ParseRequestURI(baseUrl)
+	URI, _ := url.ParseRequestURI(baseURL)
 	URI.Path = resource
 	URI.RawQuery = data.Encode()
 
