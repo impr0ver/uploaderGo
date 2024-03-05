@@ -17,7 +17,7 @@ import (
 
 const (
 	grantType    string = "refresh_token"
-	clientId     string = "vxohuxe4tabtkza" //this id creates DropBox when you configure AppConsole in cloud storage
+	clientID     string = "vxohuxe4tabtkza" //this id creates DropBox when you configure AppConsole in cloud storage
 	clientSecret string = "2twf8tn33kck6vn" //this secret creates DropBox when you configure AppConsole in cloud storage
 )
 
@@ -34,7 +34,7 @@ func RefreshAccessToken(refreshToken string) (string, error) {
 	data := url.Values{}
 	data.Set("grant_type", grantType)
 	data.Set("refresh_token", refreshToken)
-	data.Set("client_id", clientId)
+	data.Set("client_id", clientID)
 	data.Set("client_secret", clientSecret)
 	encodedData := data.Encode()
 
