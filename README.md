@@ -4,6 +4,7 @@
 
 TlQ1iuePre4AAAAAAAAAAdwpyxIBLy4hAYFPqYQsqNpitL2oMc_LH_Nzsh5tUvvT - токен который выдается при создании и настройке облачного хранилища DropBox. Токен нельзя терять, без него не получить временный токен доступа - access token!
 # Список файлов в облаке DropBox
+```
 go run main.go -token=TlQ1iuePre4AAAAAAAAAAdwpyxIBLy4hAYFPqYQsqNpitL2oMc_LH_Nzsh5tUvvT -listcloud
 
 List folder status code: 200 OK
@@ -14,13 +15,15 @@ File name: myfile5.txt, Cloud path: /data/myfile5.txt, size: 18
 File name: myfile6.txt, Cloud path: /data/myfile6.txt, size: 18
 File name: myfile7.txt, Cloud path: /data/myfile7.txt, size: 18
 File name: myfile8.txt, Cloud path: /data/myfile8.txt, size: 18
-
+```
 # Удаление файла в облаке DropBox
+```
 go run main.go -token=TlQ1iuePre4AAAAAAAAAAdwpyxIBLy4hAYFPqYQsqNpitL2oMc_LH_Nzsh5tUvvT -delete=/data/myfile8.txt
 
 Delete file "/data/myfile8.txt" status code: 200 OK
-
+```
 # Загрузка файлов в облако DropBox
+```
 go run main.go -token=TlQ1iuePre4AAAAAAAAAAdwpyxIBLy4hAYFPqYQsqNpitL2oMc_LH_Nzsh5tUvvT
 или в режиме шифрования AES-256-CBC
 go run main.go -token=TlQ1iuePre4AAAAAAAAAAdwpyxIBLy4hAYFPqYQsqNpitL2oMc_LH_Nzsh5tUvvT -key=my_seceret
@@ -30,8 +33,9 @@ New accessToken: sl.Bw0Q2-J8VwDD2UA612wlvDbaEqhg1LQ37-54yLyrnP-hB6euRPDObRHDII2x
 Upload file "defaultfolder/TMP_3501760595/1709657123395352000_myfile.txt" status code: 200 OK
 Upload file "defaultfolder/TMP_3501760595/1709657123396020000_myfile10.txt" status code: 200 OK
 Upload file "defaultfolder/TMP_3501760595/1709657123396423000_myfile2.txt" status code: 200 OK
-
+```
 # Список файлов на файловом сервере
+```
 go run main.go -listserver
 или в режиме шифрования AES-256-CBC (при условии что сервер тоже запущен в режиме шифрования - выполнено условие -key=)
 go run main.go -listserver -key=my_secret
@@ -40,15 +44,17 @@ List folder status code: 200 OK
 File name: uploads, Server path: ../../public/uploads, size: 160
 File name: 1709645625856828000_myfile.txt, Server path: ../../public/uploads/1709645625856828000_myfile.txt, size: 18
 File name: 1709645625857091000_myfile10.txt, Server path: ../../public/uploads/1709645625857091000_myfile10.txt, size: 18
-
+```
 # Удаление файла на файловом сервере
+```
 go run main.go -delete=1709645625856828000_myfi
 Delete file "1709645625856828000_myfi" status code: 404 Not Found
 
 go run main.go -delete=1709645625856828000_myfile.txt
 Delete file "1709645625856828000_myfile.txt" status code: 200 OK
-
+```
 # Загрузка файлов на файловый сервер
+```
 режим multipart-form/data по 3 файла за раз (параметр 3 - по умолчанию)
 go run main.go
 или в режиме шифрования AES-256-CBC (если сервер тоже запущен в режиме шифрования с темже ключем то данные загрузятся в дешифрованном виде)
@@ -67,16 +73,18 @@ received: Upload file "defaultfolder/TMP_903909175/1709659753782283000_myfile5.t
 received: Upload file "defaultfolder/TMP_903909175/1709659753784102000_myfile9.txt" status code: 200 OK
 received: Upload file "defaultfolder/TMP_903909175/1709659753784551000_ТЗ_выпускная_работа_1_v4.pdf" status code: 200 OK
 Wait for complete all routines...
-
+```
 # -h файлового сервера 
+```
   -a string
     	Server address and port. (default "localhost:8443")
   -key string
     	Secret key for crypt/decrypt data with AES-256-CBC cipher algoritm.
   -workdir string
     	Path to store files. (default "/")
-
+```
 # -h файлового клиента
+```
   -a string
         Server address and port. (default "localhost:8443")
   -delete string
@@ -97,3 +105,4 @@ Wait for complete all routines...
         Path to find files for sending. (default "defaultfolder")
   -token string
         Refresh token for get access token and work with cloud storage.
+```

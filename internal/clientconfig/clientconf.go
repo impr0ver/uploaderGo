@@ -28,7 +28,7 @@ type Entry struct {
 	Name           string `json:"name"`
 	PathLower      string `json:"path_lower"`
 	PathDisplay    string `json:"path_display"`
-	Id             string `json:"id"`
+	ID             string `json:"id"`
 	ClientModified string `json:"client_modified"`
 	ServerModified string `json:"server_modified"`
 	Rev            string `json:"rev"`
