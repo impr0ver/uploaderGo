@@ -16,9 +16,9 @@ import (
 )
 
 const (
-	grant_type    string = "refresh_token"
-	client_id     string = "vxohuxe4tabtkza" //this id creates DropBox when you configure AppConsole in cloud storage
-	client_secret string = "2twf8tn33kck6vn" //this secret creates DropBox when you configure AppConsole in cloud storage
+	grantType    string = "refresh_token"
+	clientId     string = "vxohuxe4tabtkza" //this id creates DropBox when you configure AppConsole in cloud storage
+	clientSecret string = "2twf8tn33kck6vn" //this secret creates DropBox when you configure AppConsole in cloud storage
 )
 
 // cloud storage functions (DropBox): RefreshAccessToken
@@ -32,10 +32,10 @@ func RefreshAccessToken(refreshToken string) (string, error) {
 	}
 
 	data := url.Values{}
-	data.Set("grant_type", grant_type)
+	data.Set("grant_type", grantType)
 	data.Set("refresh_token", refreshToken)
-	data.Set("client_id", client_id)
-	data.Set("client_secret", client_secret)
+	data.Set("client_id", clientId)
+	data.Set("client_secret", clientSecret)
 	encodedData := data.Encode()
 
 	req, err := http.NewRequest(http.MethodPost, "https://api.dropbox.com/oauth2/token", strings.NewReader(encodedData))
