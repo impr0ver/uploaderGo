@@ -12,8 +12,16 @@
 *.out
 
 # Binaries
-cmd/gophermart/main
-cmd/gophermart/gophermart
+#cmd/gophermart/main
+#cmd/gophermart/gophermart
+
+cmd/server/main
+cmd/server/server
+cmd/client/main
+cmd/client/client
+
+#cmd/client/defaultfolder/ТЗ_выпускная_работа_1_v4.pdf
+#cmd/client/defaultfolder/go1.21.6.linux-amd64.tar.gz
 
 # Dependency directories (remove the comment below to include it)
 vendor/
@@ -21,3 +29,6 @@ vendor/
 # IDEs directories
 .idea
 .vscode
+
+#.DS_Store
+**/.DS_Store
