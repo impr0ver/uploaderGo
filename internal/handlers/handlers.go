@@ -53,13 +53,17 @@ func displayFormMain(c echo.Context, memStor serverstor.MemoryStoragerInterface)
 }
 
 func displayFormRegister(c echo.Context) error {
-	return c.Render(http.StatusOK, "register.html", nil)
+	return c.Render(http.StatusOK, "register.html", map[string]interface{}{
+		"title":     "Загрузка файлов",
+	})
 }
 
 func displayFormLogin(c echo.Context) error {
 	//kill cookie
 	auth.WriteCookie(c, "Authorization", "", time.Now().Add(-1*time.Hour), "/", c.Request().URL.Hostname(), false, false) //for logout
-	return c.Render(http.StatusOK, "login.html", nil)
+	return c.Render(http.StatusOK, "login.html", map[string]interface{}{
+		"title":     "Загрузка файлов",
+	})
 }
 
 func uploadFilesMultiple(c echo.Context, cfg *servconfig.ServerConfig, memStor serverstor.MemoryStoragerInterface) error {
