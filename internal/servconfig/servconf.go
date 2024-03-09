@@ -5,20 +5,24 @@ import (
 	"flag"
 	"os"
 	"path/filepath"
+	"time"
 
 	"github.com/caarlos0/env/v6"
 	"go.uber.org/zap"
 )
 
 const (
-	ROOTDIR = "../../public/uploads"
+	ROOTDIR           = "../../public/uploads"
+	DefaultCtxTimeout = 10 * time.Second
+	DefaultDSN           = "user=postgres password=karat911 host=localhost port=5432 dbname=filesdata sslmode=disable" //user=postgres password=karat911 host=localhost port=5432 dbname=metrics sslmode=disable
 )
 
 type ServerConfig struct {
-	Address  string `env:"ADDRESS"`
-	WorkDir  string `env:"WORKDIR"`
-	Key      string `env:"KEY"`
-	FullPath string
+	Address     string `env:"ADDRESS"`
+	WorkDir     string `env:"WORKDIR"`
+	Key         string `env:"KEY"`
+	DatabaseDSN string `env:"DATABASEDSN"`
+	FullPath    string
 }
 
 func InitConfig(sLogger *zap.SugaredLogger) *ServerConfig {
@@ -32,6 +36,7 @@ func InitConfig(sLogger *zap.SugaredLogger) *ServerConfig {
 	flag.StringVar(&cfg.Address, "a", "localhost:8443", "Server address and port.")
 	flag.StringVar(&cfg.WorkDir, "workdir", "/", "Path to store files.")
 	flag.StringVar(&cfg.Key, "key", "", "Secret key for crypt/decrypt data with AES-256-CBC cipher algoritm.")
+	flag.StringVar(&cfg.DatabaseDSN, "d", DefaultDSN, "Source to DB")
 	flag.Parse()
 
 	if envAddr := os.Getenv("ADDRESS"); envAddr != "" {
@@ -44,6 +49,10 @@ func InitConfig(sLogger *zap.SugaredLogger) *ServerConfig {
 
 	if envKey := os.Getenv("KEY"); envKey != "" {
 		cfg.Key = envKey
+	}
+
+	if envDBDSN := os.Getenv("DATABASEDSN"); envDBDSN != "" {
+		cfg.DatabaseDSN = envDBDSN
 	}
 
 	resPath := filepath.Join(ROOTDIR, cfg.WorkDir)

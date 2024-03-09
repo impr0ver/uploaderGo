@@ -1,9 +1,13 @@
 package serverstor
 
 import (
+	"context"
 	"fmt"
 	"os"
 	"path/filepath"
+
+	"github.com/impr0ver/uploaderGo/internal/logger"
+	"github.com/impr0ver/uploaderGo/internal/servconfig"
 )
 
 // struct fot marshal JSON-data list
@@ -38,4 +42,29 @@ func DeleteFile(workDir string, filePath string) error {
 		return fmt.Errorf("error in os.Remove to delete file: %w", err)
 	}
 	return nil
+}
+
+type MemoryStoragerInterface interface {
+	AddNewFileInfo(ctx context.Context, fileName string, filePath string, fileSize int64) error
+	DeleteFileInfoByFilePath(ctx context.Context, filePath string) error
+	RegisterNewUser(ctx context.Context, userName string, hash string) error
+	GetUserByName(ctx context.Context, userName string) (DBUser, error)
+	GetAllFileInfo(ctx context.Context) ([]DBData, error)
+	DBPing(ctx context.Context) error
+}
+
+func NewStorage(cfg *servconfig.ServerConfig) MemoryStoragerInterface {
+	var sLogger = logger.NewLogger()
+	var memStor MemoryStoragerInterface
+
+	ctxTimeOut, cancel := context.WithTimeout(context.Background(), servconfig.DefaultCtxTimeout)
+	defer cancel()
+
+	db, err := ConnectDB(ctxTimeOut, cfg.DatabaseDSN)
+	if err != nil {
+		sLogger.Fatalf("error DB: %v", err)
+	}
+	memStor = &DBStorage{DB: db.DB}
+
+	return memStor
 }

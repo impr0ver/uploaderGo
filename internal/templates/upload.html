@@ -1,19 +1,155 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>Upload File</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+      <link href="/static/css/bootstrap.min.css" rel="stylesheet">
+      <link rel="stylesheet" href="/static/css/mycss.css">
+    <title>{{ .title }}</title>
   </head>
-  <body>
-    <form
-      enctype="multipart/form-data"
-      action="https://localhost:8443/upload"
-      method="post"
-    >
-      <input type="file" name="file" />
-      <input type="submit" value="upload" />
-    </form>
-  </body>
-</html>
+
+  <nav class="navbar navbar-expand-lg navbar-light bg-light p-3">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="/index">{{.title}}</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+  
+      <div class="collapse navbar-collapse" id="navbarNavDropdown">
+        <ul class="navbar-nav ms-auto ">
+        <li class="nav-item">
+            <a class="nav-link mx-2 active" aria-current="page" href="/index"><b>Главная</b></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link mx-2" href="#" disabled>some link</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link mx-2" href="#" disabled>some link#2</a>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link mx-2 dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              some link#3
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+              <li><a class="dropdown-item" href="#">Link#</a></li>
+              <li><a class="dropdown-item" href="#">Link##</a></li>
+              <li><a class="dropdown-item" href="#">Link###</a></li>
+            </ul>
+          </li>
+        </ul>
+        <ul class="navbar-nav ms-auto d-none d-lg-inline-flex">
+        <li class="nav-item dropdown">
+            <a class="nav-link mx-2 dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              <b>{{.user}}</b>
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+              <li><a class="dropdown-item" href="/login">Выйти</a></li>
+              
+              {{ if eq .user "Administrator"}} <li><a class="dropdown-item" href="#" disabled>Settings</a></li> {{end}}
+              
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+<div class="form-body">
+    <div class="row">
+        <div class="form-holder">
+        <center>{{ if .message }} <div class="alert alert-secondary" role="alert">"{{.message}}"</div>{{end}}</center>
+
+            <div class="form-content">
+                <div class="form-items">
+                    <p>Загрузка файла.</p>
+                    <form class="requires-validation" enctype="multipart/form-data" method="POST" action="https://localhost:8443/upload" novalidate id="signForm">
+                      
+                      <div class="col-md-12">
+                           <input class="form-control" type="file" name="file" placeholder="Файл" required>
+                          
+                           <div class="valid-feedback">Файл указан</div>
+                           <div class="invalid-feedback">Файл не указан!</div>
+                      </div>
+                      <!--set hidden param that say that we send data via html-form-->
+                      <input name="send-from-web" type="hidden" value="true">
+                        
+                        <div class="form-button mt-3">
+                            <button type="submit" id="btnSubmit" class="btn btn-primary">Загрузить</button>
+                        </div>
+                        
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="form-body">
+  <div class="row">
+      <div class="form-holder">
+          <div class="form-content">
+              <div class="form-items">
+                  <div class="col-md-12">
+                          <table data-toggle="table"
+                          class="table table-striped table-hover table-bordered caption-top"> 
+                            <caption style="color: #fff;">Список файлов базы данных:</caption>
+                                  <thead class="table-light">
+                                      <tr>
+                                          <th>Имя файла</th>
+                                          <th>Путь</th>
+                                          <th>Размер, Bytes</th>
+                                      </tr>
+                                  </thead>
+                                  <tbody class="table-light">
+                                    {{range .filesdata}}
+                                      <tr>
+                                          <td>{{.FileName}}</td>
+                                          <td>{{.FilePath}}</td>
+                                          <td>{{.FileSize}}</td>
+                                      </tr>
+                                      {{end}}
+                                      
+                                  </tbody>
+                            </table> 
+                  </div>
+              </div>             
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script src="/static/js/jquery.min.js"></script>
+<script src="/static/js/bootstrap-multiselect.js"></script>
+<script src="/static/js/bootstrap.bundle.min.js"></script>
+
+<script>
+$(document).ready(function() {
+        $('#form-multiple-select').multiselect({
+          //nonSelectedText: '',
+          //nSelectedText: 'выбрано',
+          //allSelectedText: 'Все',
+    templates: {
+      button: '<button class="multiselect btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false"><span class="multiselect-selected-text"></span></button>',
+    },           
+        });
+    });
+</script>
+
+
+<script>
+  (function () {
+  'use strict'
+  const forms = document.querySelectorAll('.requires-validation')
+  Array.from(forms)
+    .forEach(function (form) {
+      form.addEventListener('submit', function (event) {
+      if (!form.checkValidity()) {
+          event.preventDefault()
+          event.stopPropagation()
+      }
+        form.classList.add('was-validated')
+      }, true)
+    })
+  })()
+  </script>

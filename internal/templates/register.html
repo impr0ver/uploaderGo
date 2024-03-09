@@ -1,0 +1,104 @@
+
+
+<html lang="en">
+  <head>
+    
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+ <link href="/static/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="/static/css/mycss.css">
+
+    <title>{{ .title }}</title>
+  </head>
+  
+  
+  
+  <body>
+	  
+    
+    <nav class="navbar navbar-expand-lg navbar-light bg-light p-3">
+      <div class="container-fluid"><a class="navbar-brand" href="/index">{{.title}}</a>
+      </div>
+    </nav>
+   
+    <div class="form-body">
+        <div class="row">
+            <div class="form-holder">
+            <center>{{ if .username }} <div class="alert alert-secondary" role="alert">Пользователь "{{.username}}" успешно зарегистрирован! </div>{{end}}</center>
+<center>{{ if .message }} <div class="alert alert-secondary" role="alert">"{{.message}}"</div>{{end}}</center>
+ 
+                <div class="form-content">
+                    <div class="form-items">
+                        <h3>Регистрация нового пользователя</h3>
+                        <p>Введите логин и два раза пароль.</p>
+                        <form class="requires-validation" method="POST" action="https://localhost:8443/register" novalidate id="signForm">
+
+                            <div class="col-md-12">
+                               <input class="form-control" type="text" name="username" placeholder="Логин" required>
+                              
+                               <div class="valid-feedback">Логин указан</div>
+                               <div class="invalid-feedback">Логин не указан!</div>
+                            </div>
+                            
+
+
+                           <div class="col-md-12">
+                              <input class="form-control" type="password" name="password" placeholder="Пароль" required>
+                               <div class="valid-feedback">Пароль указан</div>
+                               <div class="invalid-feedback">Пароль не указан</div>
+                           </div>
+                          
+                          <div class="col-md-12">
+                              <input class="form-control" type="password" name="repassword" placeholder="Пароль повторно" required>
+                               <div class="valid-feedback">Пароль указан</div>
+                               <div class="invalid-feedback">Пароль не указан</div>
+                           </div>
+
+                           <div class="col-md-12">
+                              <a href="https://localhost:8443/login" style="color: #fff">Страница входа</a>
+                           </div>
+                           
+
+                  
+
+                            <div class="form-button mt-3">
+                                <button type="submit" id="btnSubmit" class="btn btn-primary">Регистрация</button>
+                            </div>
+                            
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+(function () {
+'use strict'
+const forms = document.querySelectorAll('.requires-validation')
+Array.from(forms)
+  .forEach(function (form) {
+    form.addEventListener('submit', function (event) {
+    if (!form.checkValidity()) {
+        event.preventDefault()
+        event.stopPropagation()
+    }
+      form.classList.add('was-validated')
+    }, true)
+  })
+})()
+</script>
+

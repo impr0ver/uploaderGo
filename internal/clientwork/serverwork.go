@@ -49,7 +49,7 @@ func ServerWork(wg *sync.WaitGroup, cfg *clientconfig.Config, sLogger *zap.Sugar
 			chunkSlices := chunkSlice(files, cfg.FilesCount)
 
 			sLogger.Info("Sending files parts: ", chunkSlices)
-			err := clientreq.UploadDataMulti(cfg.Address, chunkSlices)
+			err := clientreq.UploadDataMulti(cfg.Address, cfg.Key, chunkSlices)
 			if err != nil {
 				return fmt.Errorf("error in UploadDataMulti: %w", err)
 			}
@@ -63,7 +63,7 @@ func ServerWork(wg *sync.WaitGroup, cfg *clientconfig.Config, sLogger *zap.Sugar
 				wg.Add(1)
 				go func() {
 					defer wg.Done()
-					status, err := clientreq.UploadDataSingle(cfg.Address, file)
+					status, err := clientreq.UploadDataSingle(cfg.Address, cfg.Key, file)
 					if err != nil {
 						cError <- err
 					}

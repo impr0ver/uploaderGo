@@ -14,13 +14,16 @@ import (
 
 	"github.com/impr0ver/uploaderGo/internal/clientconfig"
 	"github.com/impr0ver/uploaderGo/internal/crypt"
+	"github.com/impr0ver/uploaderGo/internal/gzip"
 	"github.com/impr0ver/uploaderGo/internal/logger"
 )
 
-func UploadDataSingle( /*wg *sync.WaitGroup,*/ address string, filePath string) (string, error) {
-	//defer wg.Done()
+func UploadDataSingle(address string, key string, filePath string) (string, error) {
 	var sLogger = logger.NewLogger()
 	var buf bytes.Buffer
+	var gzipBuffer bytes.Buffer
+	var req *http.Request
+
 	w := multipart.NewWriter(&buf)
 	file, err := os.Open(filePath)
 	if err != nil {
@@ -37,10 +40,25 @@ func UploadDataSingle( /*wg *sync.WaitGroup,*/ address string, filePath string) 
 	}
 	w.Close()
 
-	req, err := http.NewRequest("POST", fmt.Sprintf("https://%s/upload", address), &buf) //also send on https://%s/multiupload works too
-	if err != nil {
-		return "", fmt.Errorf("error in NewRequest: %w", err)
+	//add Gzip compress if do not use binary crypto alghoritm
+	if key == "" {
+		gzip.CompressMultipart(&gzipBuffer, &buf)
+		req, err = http.NewRequest("POST", fmt.Sprintf("https://%s/upload", address), &gzipBuffer) //also send on https://%s/multiupload works too
+		if err != nil {
+			return "", fmt.Errorf("error in NewRequest: %w", err)
+		}
+	} else {
+		req, err = http.NewRequest("POST", fmt.Sprintf("https://%s/upload", address), &buf) //also send on https://%s/multiupload works too
+		if err != nil {
+			return "", fmt.Errorf("error in NewRequest: %w", err)
+		}
 	}
+
+	//add gzip header if do not use binary crypto alghoritm
+	if key == "" {
+		req.Header.Set("Content-Encoding", "gzip")
+	}
+	req.Header.Set("User-Agent", userAgent)
 	req.Header.Set("Content-Type", w.FormDataContentType())
 
 	tr := &http.Transport{
@@ -62,12 +80,16 @@ func UploadDataSingle( /*wg *sync.WaitGroup,*/ address string, filePath string) 
 	return resp.Status, nil
 }
 
-func UploadDataMulti(address string, chunks [][]string) error {
+func UploadDataMulti(address string, key string, chunks [][]string) error {
 	var sLogger = logger.NewLogger()
 	var resp *http.Response
 
 	for _, chunk := range chunks {
 		var buf bytes.Buffer
+		var gzipBuffer bytes.Buffer
+		var req *http.Request
+		var err error
+
 		w := multipart.NewWriter(&buf)
 
 		for _, file := range chunk {
@@ -90,11 +112,28 @@ func UploadDataMulti(address string, chunks [][]string) error {
 		}
 		w.Close()
 
-		req, err := http.NewRequest("POST", fmt.Sprintf("https://%s/multiupload", address), &buf)
-		if err != nil {
-			return fmt.Errorf("error in NewRequest: %w", err)
+		
+		//add Gzip compress if do not use binary crypto alghoritm
+		if key == "" {
+			gzip.CompressMultipart(&gzipBuffer, &buf)
+			req, err = http.NewRequest("POST", fmt.Sprintf("https://%s/multiupload", address), &gzipBuffer)
+			if err != nil {
+				return fmt.Errorf("error in NewRequest: %w", err)
+			}
+		} else {
+			req, err = http.NewRequest("POST", fmt.Sprintf("https://%s/multiupload", address), &buf)
+			if err != nil {
+				return fmt.Errorf("error in NewRequest: %w", err)
+			}
 		}
+
+		//add gzip header if do not use binary crypto alghoritm
+		if key == "" {
+			req.Header.Set("Content-Encoding", "gzip")
+		}
+		req.Header.Set("User-Agent", userAgent)
 		req.Header.Set("Content-Type", w.FormDataContentType())
+
 		tr := &http.Transport{
 			TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
 		}
@@ -138,6 +177,8 @@ func DeleteDataFromServer(address string, deleteFile string) (string, error) {
 		return "", fmt.Errorf("error in NewRequest to delete file from server: %w", err)
 	}
 
+	req.Header.Set("User-Agent", userAgent)
+
 	resp, err := client.Do(req)
 	if err != nil {
 		return "", fmt.Errorf("error in send request to delete file from server: %w", err)
@@ -160,6 +201,8 @@ func ListDataFromServer(address string, key string) (string, *clientconfig.FServ
 	if err != nil {
 		return "", nil, fmt.Errorf("error in NewRequest to list files from server: %w", err)
 	}
+
+	req.Header.Set("User-Agent", userAgent)
 
 	resp, err := client.Do(req)
 	if err != nil {

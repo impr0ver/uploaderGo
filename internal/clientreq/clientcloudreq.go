@@ -19,6 +19,7 @@ const (
 	grantType    string = "refresh_token"
 	clientID     string = "vxohuxe4tabtkza" //this id creates DropBox when you configure AppConsole in cloud storage
 	clientSecret string = "2twf8tn33kck6vn" //this secret creates DropBox when you configure AppConsole in cloud storage
+	userAgent    string = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/603.3.8 (KHTML, like Gecko) Version/10.1.2 Safari/603.3.8"
 )
 
 // cloud storage functions (DropBox): RefreshAccessToken
@@ -42,6 +43,8 @@ func RefreshAccessToken(refreshToken string) (string, error) {
 	if err != nil {
 		return "", fmt.Errorf("error in NewRequest to get access token: %w", err)
 	}
+
+	req.Header.Set("User-Agent", userAgent)
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	req.Header.Add("Content-Length", strconv.Itoa(len(data.Encode())))
 	resp, err := client.Do(req)
@@ -84,8 +87,6 @@ func UploadDataInCloud(accessToken string, filePath string) (string, error) {
 		return "", fmt.Errorf("error in NewRequest: %w", err)
 	}
 
-	req.Header.Add("Authorization", "Bearer "+accessToken) //Set access token to DropBox
-
 	dropBoxUploadAPI := &clientconfig.DropboxUploadAPIArg{
 		Autorename: false,
 		Mode:       "add",
@@ -99,9 +100,12 @@ func UploadDataInCloud(accessToken string, filePath string) (string, error) {
 		return "", fmt.Errorf("error in JSON-encoding data: %w", err)
 	}
 
+	req.Header.Set("User-Agent", userAgent)
+	req.Header.Add("Authorization", "Bearer "+accessToken) //Set access token to DropBox
 	req.Header.Add("Dropbox-API-Arg", string(jData))
 	req.Header.Set("Content-Type", "application/octet-stream")
 	req.Header.Add("Content-Length", strconv.FormatInt(fi.Size(), 10))
+
 	resp, err := client.Do(req)
 	if err != nil {
 		return "", fmt.Errorf("error in send request to upload file in cloud: %w", err)
@@ -132,6 +136,7 @@ func DeleteDataInCloud(accessToken string, filePath string) (string, error) {
 		return "", fmt.Errorf("error in NewRequest: %w", err)
 	}
 
+	req.Header.Set("User-Agent", userAgent)
 	req.Header.Add("Authorization", "Bearer "+accessToken) //Set access token to DropBox
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Add("Content-Length", strconv.Itoa(len(jData)))
@@ -145,7 +150,7 @@ func DeleteDataInCloud(accessToken string, filePath string) (string, error) {
 }
 
 // cloud storage functions (DropBox): ListDataInCloud
-func ListDataInCloud(accessToken string/*, path string*/) (string, *clientconfig.DboxFolder, error) {
+func ListDataInCloud(accessToken string /*, path string*/) (string, *clientconfig.DboxFolder, error) {
 	tr := &http.Transport{
 		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
 	}
@@ -160,7 +165,7 @@ func ListDataInCloud(accessToken string/*, path string*/) (string, *clientconfig
 		IncMediaInfo:      false,
 		IncMountedFolders: true,
 		IncNonDwnFls:      true,
-		Path:              "/data/",/*path,*/
+		Path:              "/data/", /*path,*/
 		Recursive:         false,
 	}
 
@@ -174,6 +179,7 @@ func ListDataInCloud(accessToken string/*, path string*/) (string, *clientconfig
 		return "", nil, fmt.Errorf("error in NewRequest: %w", err)
 	}
 
+	req.Header.Set("User-Agent", userAgent)
 	req.Header.Add("Authorization", "Bearer "+accessToken) //Set access token to DropBox
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Add("Content-Length", strconv.Itoa(len(jData)))
@@ -183,11 +189,6 @@ func ListDataInCloud(accessToken string/*, path string*/) (string, *clientconfig
 	}
 	defer resp.Body.Close()
 
-	// bodyBytes, err := io.ReadAll(resp.Body)
-	// if err != nil {
-	// 	log.Fatal(err)
-	// }
-
 	dropBoxListFolder := &clientconfig.DboxFolder{}
 	err = json.NewDecoder(resp.Body).Decode(&dropBoxListFolder)
 	if err != nil {
@@ -196,4 +197,3 @@ func ListDataInCloud(accessToken string/*, path string*/) (string, *clientconfig
 
 	return resp.Status, dropBoxListFolder, nil
 }
-

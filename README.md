@@ -1,7 +1,7 @@
 # go-musthave-diploma-tpl
 ![Alt text](%D0%A2%D0%97_%D0%B2%D1%8B%D0%BF%D1%83%D1%81%D0%BA%D0%BD%D0%B0%D1%8F_%D1%80%D0%B0%D0%B1%D0%BE%D1%82%D0%B0_1.png)
 
-«Система передачи данных на удаленный сервер или в «облачное» хранилище данных».
+# «Система передачи данных на удаленный сервер или в «облачное» хранилище данных».
 
 Список команд сервиса:
 
@@ -29,7 +29,7 @@ Delete file "/data/myfile8.txt" status code: 200 OK
 ```
 go run main.go -token=DTlQ1iuePre4AAAAAAAAAAdwpyxIBLy4hAYFPqYQsqNpitL2oMc_LH_Nzsh5tUvvT
 или в режиме шифрования AES-256-CBC
-go run main.go -token=DTlQ1iuePre4AAAAAAAAAAdwpyxIBLy4hAYFPqYQsqNpitL2oMc_LH_Nzsh5tUvvT -key=my_seceret
+go run main.go -token=DTlQ1iuePre4AAAAAAAAAAdwpyxIBLy4hAYFPqYQsqNpitL2oMc_LH_Nzsh5tUvvT -key=<secret_key>
 
 Work with cloud storage DropBox...
 New accessToken: sl.Bw0Q2-J8VwDD2UA612wlvDbaEqhg1LQ37-54yLyrnP-hB6euRPDObRHDII2xccgycz39JL7G_ODEe3DWttx8Yw3kacyVWyrf...
@@ -40,8 +40,8 @@ Upload file "defaultfolder/TMP_3501760595/1709657123396423000_myfile2.txt" statu
 # Список файлов на файловом сервере
 ```
 go run main.go -listserver
-или в режиме шифрования AES-256-CBC (при условии что сервер тоже запущен в режиме шифрования - выполнено условие -key=)
-go run main.go -listserver -key=my_secret
+или в режиме шифрования AES-256-CBC (при условии что сервер тоже запущен в режиме шифрования - выполнено условие -key=<secret_key>)
+go run main.go -listserver -key=<secret_key>
 
 List folder status code: 200 OK
 File name: uploads, Server path: ../../public/uploads, size: 160
@@ -61,14 +61,14 @@ Delete file "1709645625856828000_myfile.txt" status code: 200 OK
 режим multipart-form/data по 3 файла за раз (параметр 3 - по умолчанию)
 go run main.go
 или в режиме шифрования AES-256-CBC (если сервер тоже запущен в режиме шифрования с темже ключем то данные загрузятся в дешифрованном виде)
-go run main.go -key=ggg
+go run main.go -key=<secret_key>
 
 Sending files parts: [[defaultfolder/TMP_1606704178/1709659506579429000_myfile.txt defaultfolder/TMP_1606704178/1709659506580721000_myfile10.txt defaultfolder/TMP_1606704178/1709659506581575000_myfile2.txt] [defaultfolder/TMP_1606704178/1709659506582686000_myfile3.txt defaultfolder/TMP_1606704178/1709659506583503000_myfile4.txt defaultfolder/TMP_1606704178/1709659506583971000_myfile5.txt] [defaultfolder/TMP_1606704178/1709659506584656000_myfile6.txt defaultfolder/TMP_1606704178/1709659506585473000_myfile7.txt defaultfolder/TMP_1606704178/1709659506586273000_myfile8.txt] [defaultfolder/TMP_1606704178/1709659506586871000_myfile9.txt defaultfolder/TMP_1606704178/1709659506587489000_ТЗ_выпускная_работа_1_v4.pdf]]
 Try to send part files: [defaultfolder/TMP_1606704178/1709659506579429000_myfile.txt defaultfolder/TMP_1606704178/1709659506580721000_myfile10.txt defaultfolder/TMP_1606704178/1709659506581575000_myfile2.txt]
 Upload part files status code: 200 OK
 
 или в режиме 1 to 1 через механизм горутин
-go run main.go -mode=false -key=ggg
+go run main.go -mode=false -key=<secret_key>
 
 received: Upload file "defaultfolder/TMP_903909175/1709659753781919000_myfile4.txt" status code: 200 OK
 received: Upload file "defaultfolder/TMP_903909175/1709659753780356000_myfile10.txt" status code: 200 OK
@@ -77,7 +77,7 @@ received: Upload file "defaultfolder/TMP_903909175/1709659753784102000_myfile9.t
 received: Upload file "defaultfolder/TMP_903909175/1709659753784551000_ТЗ_выпускная_работа_1_v4.pdf" status code: 200 OK
 Wait for complete all routines...
 ```
-# -h файлового сервера 
+# Help файлового сервера (-h) 
 ```
   -a string
     	Server address and port. (default "localhost:8443")
@@ -86,7 +86,7 @@ Wait for complete all routines...
   -workdir string
     	Path to store files. (default "/")
 ```
-# -h файлового клиента
+# Help файлового клиента (-h)
 ```
   -a string
         Server address and port. (default "localhost:8443")
