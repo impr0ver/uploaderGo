@@ -82,6 +82,12 @@ func (d *DBStorage) AddNewFileInfo(ctx context.Context, fileName string, filePat
 	return err
 }
 
+func (d *DBStorage) GetFilePathByName(ctx context.Context, fileName string) (string, error) {
+	var filePath string
+	err := d.DB.QueryRow(`SELECT filepath FROM Data WHERE filename = $1;`, fileName).Scan(&filePath)
+	return filePath, err
+}
+
 func (d *DBStorage) DeleteFileInfoByFilePath(ctx context.Context, filePath string) error {
 	_, err := d.DB.ExecContext(ctx, `DELETE FROM data WHERE filepath = $1;`, filePath)
 	return err
@@ -96,12 +102,6 @@ func (d *DBStorage) GetUserByName(ctx context.Context, userName string) (DBUser,
 	var user DBUser
 	err := d.DB.QueryRow(`SELECT username, password FROM Users WHERE username = $1;`, userName).Scan(&user.UserName, &user.Password)
 	return user, err
-}
-
-func (d *DBStorage) GetUserHash(ctx context.Context, userName string) (string, error) {
-	var hash string
-	err := d.DB.QueryRow(`SELECT hash FROM Users WHERE username = $1;`, userName).Scan((&hash))
-	return hash, err
 }
 
 func (d *DBStorage) GetAllFileInfo(ctx context.Context) ([]DBData, error) {
@@ -128,9 +128,4 @@ func (d *DBStorage) GetAllFileInfo(ctx context.Context) ([]DBData, error) {
 	}
 
 	return dbDatas, nil
-}
-
-func (d *DBStorage) DBPing(ctx context.Context) error {
-	err := d.DB.PingContext(ctx)
-	return err
 }

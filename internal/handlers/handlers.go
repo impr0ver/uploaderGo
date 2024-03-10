@@ -116,8 +116,8 @@ func uploadFilesMultiple(c echo.Context, cfg *servconfig.ServerConfig, memStor s
 			memStor.AddNewFileInfo(ctx, file.Filename, filepath.Join(cfg.FullPath, file.Filename), file.Size)
 
 			sLogger.Info("File: ", file.Filename, "size: ", file.Size, " was uploaded successfully!")
-			c.String(http.StatusOK, "File uploaded successfully\n")
 		}
+		c.String(http.StatusOK, "Files uploaded successfully\n")
 	}
 	return nil
 }
@@ -235,6 +235,7 @@ func EchoRouter(memStor serverstor.MemoryStoragerInterface, cfg *servconfig.Serv
 	}
 	e.Renderer = renderer
 
+	//middleware logger and decompress gzip
 	e.Use(middleware.Logger())
 	e.Use(middleware.Decompress())
 
@@ -253,7 +254,7 @@ func EchoRouter(memStor serverstor.MemoryStoragerInterface, cfg *servconfig.Serv
 		return deleteFileSingle(c, cfg, memStor)
 	})
 
-	//frontend: "register", "login" (there is no such thing in the technical spec, but need for operator comfort)
+	//frontend: "register", "login"
 	e.GET("/register", displayFormRegister)
 	e.GET("/login", displayFormLogin)
 
@@ -265,6 +266,7 @@ func EchoRouter(memStor serverstor.MemoryStoragerInterface, cfg *servconfig.Serv
 	})
 
 	securedGroup := e.Group("")
+	//middleware auth
 	securedGroup.Use(auth.Auth)
 	securedGroup.GET("/index", func(c echo.Context) error {
 		return displayFormMain(c, memStor)
