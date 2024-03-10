@@ -21,12 +21,13 @@ func FilePathWalkDir(root string) ([]FileInfo, error) {
 	var fileInfos []FileInfo
 	var fileInfo FileInfo
 	err := filepath.Walk(root, func(path string, info os.FileInfo, err error) error {
+		if !info.IsDir() {
+			fileInfo.FileName = info.Name()
+			fileInfo.FilePath = path
+			fileInfo.FileSize = info.Size()
 
-		fileInfo.FileName = info.Name()
-		fileInfo.FilePath = path
-		fileInfo.FileSize = info.Size()
-
-		fileInfos = append(fileInfos, fileInfo)
+			fileInfos = append(fileInfos, fileInfo)
+		}
 
 		return nil
 	})

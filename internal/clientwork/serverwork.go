@@ -30,9 +30,12 @@ func ServerWork(wg *sync.WaitGroup, cfg *clientconfig.Config, sLogger *zap.Sugar
 			}
 			sLogger.Infof("List folder status code: %s", status)
 
-			for _, item := range *dataList {
-				sLogger.Infof("File name: %s, Server path: %s, size: %d", item.FileName, item.FilePath, item.FileSize)
+			if dataList != nil {
+				for _, item := range *dataList {
+					sLogger.Infof("File name: %s, Server path: %s, size: %d", item.FileName, item.FilePath, item.FileSize)
+				}
 			}
+
 			return nil
 		}
 
