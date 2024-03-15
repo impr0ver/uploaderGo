@@ -27,6 +27,7 @@ func FilePathWalkDir(root string) ([]FileInfo, error) {
 			fileInfo.FileSize = info.Size()
 
 			fileInfos = append(fileInfos, fileInfo)
+		
 		}
 		return nil
 	})
