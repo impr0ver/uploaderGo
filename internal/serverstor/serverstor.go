@@ -28,7 +28,6 @@ func FilePathWalkDir(root string) ([]FileInfo, error) {
 
 			fileInfos = append(fileInfos, fileInfo)
 		}
-
 		return nil
 	})
 	if err != nil {
