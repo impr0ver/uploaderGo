@@ -42,7 +42,10 @@ func displayFormMain(c echo.Context, memStor serverstor.MemoryStoragerInterface)
 	ctx, cancel := context.WithTimeout(c.Request().Context(), defaultCtxTimeout)
 	defer cancel()
 
-	dbData, _ := memStor.GetAllFileInfo(ctx)
+	dbData, err := memStor.GetAllFileInfo(ctx)
+	if err != nil {
+		return c.String(http.StatusInternalServerError, err.Error())
+	}
 
 	return c.Render(http.StatusOK, "upload.html", map[string]interface{}{
 		"title":     "Загрузка файлов",

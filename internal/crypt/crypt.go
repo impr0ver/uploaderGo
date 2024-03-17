@@ -18,16 +18,16 @@ func getMD5Hash(text string) []byte {
 	return hash[:]
 }
 
-// Encrypt encrypts plain text string into cipher text string
+// Encrypt plain text string into cipher text string
 func AES256CBCEncode(plainText []byte, key string) ([]byte, error) {
 	bKey := getMD5Hash(key)
 
 	plainText, err := pkcs7.Pad(plainText, aes.BlockSize)
 	if err != nil {
-		return nil, fmt.Errorf(`plainText: "%s" has error`, plainText)
+		return nil, fmt.Errorf("error in Pad function: %w", err)
 	}
 	if len(plainText)%aes.BlockSize != 0 {
-		err := fmt.Errorf(`plainText: "%s" has the wrong block size`, plainText)
+		err := fmt.Errorf("plainText has the wrong block size")
 		return nil, err
 	}
 
@@ -48,7 +48,7 @@ func AES256CBCEncode(plainText []byte, key string) ([]byte, error) {
 	return cipherText, nil
 }
 
-// Decrypt decrypts cipher text string into plain text string
+// Decrypt cipher text string into plain text string
 func AES256CBCDecode(cipherText []byte, key string) ([]byte, error) {
 	bKey := getMD5Hash(key)
 
@@ -69,7 +69,10 @@ func AES256CBCDecode(cipherText []byte, key string) ([]byte, error) {
 	mode := cipher.NewCBCDecrypter(block, iv)
 	mode.CryptBlocks(cipherText, cipherText)
 
-	cipherText, _ = pkcs7.Unpad(cipherText, aes.BlockSize)
+	cipherText, err = pkcs7.Unpad(cipherText, aes.BlockSize)
+	if err != nil {
+		return nil, fmt.Errorf("error in Unpad function: %w", err)
+	}
 	return cipherText, nil
 }
 

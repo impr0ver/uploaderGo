@@ -38,7 +38,7 @@ func (suite *DBStorageTestSuite) SetupSuite() {
 	suite.DB, _ = serverstor.ConnectDB(context.TODO(), testDSN)
 }
 
-func (suite *DBStorageTestSuite) TestDBStorageAddCounterAndGetCounter() {
+func (suite *DBStorageTestSuite) TestDBStorageAddNewFileAndGetFilePath() {
 	ctx := context.Background()
 
 	tests := []struct {
