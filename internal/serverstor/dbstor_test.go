@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"testing"
+	"time"
 
 	"github.com/impr0ver/uploaderGo/internal/serverstor"
 	"github.com/stretchr/testify/suite"
@@ -35,6 +36,39 @@ func (suite *DBStorageTestSuite) SetupSuite() {
 
 	testDSN := "postgresql://localhost:5432/" + dbname + "?user=postgres&password=postgres"
 	suite.DB, _ = serverstor.ConnectDB(context.TODO(), testDSN)
+}
+
+func (suite *DBStorageTestSuite) TestDBStorageAddCounterAndGetCounter() {
+	ctx := context.Background()
+
+	tests := []struct {
+		name     string
+		fName    string
+		fPath    string
+		fSize    int64
+		createAt time.Time
+		want     string
+	}{
+		{"test#1", "myfile1", "/path1/path2/path3/myfile1", 111111, time.Now(), "/path1/path2/path3/myfile1"},
+		{"test#2", "myfile 2.jpg", "/path 1/path 2/path 3/myfile 2.jpg", 2958, time.Now(), "/path 1/path 2/path 3/myfile 2.jpg"},
+		{"test#3", "myfile3.pdf", "/path/myfile3.pdf", 101010, time.Now(), "/path/myfile3.pdf"},
+		{"test#4", "myfile 4.txt", "/somepath/myfile 4.txt", 10, time.Now(), "/somepath/myfile 4.txt"},
+	}
+	for _, tt := range tests {
+		suite.Run(tt.name, func() {
+			err := suite.DB.AddNewFileInfo(ctx, tt.fName, tt.fPath, tt.fSize)
+			suite.NoError(err, tt.name+" failed")
+
+			res, err := suite.DB.GetAllFileInfo(ctx)
+			suite.NoError(err, tt.name+", GetAllFileInfo failed")
+
+			for _, item := range res {
+				suite.Equal(item.FilePath, tt.want)
+
+				suite.DB.DeleteFileInfoByFilePath(ctx, item.FilePath)
+			}
+		})
+	}
 }
 
 func (suite *DBStorageTestSuite) TestDBStorageGetAllFileInfo() {
