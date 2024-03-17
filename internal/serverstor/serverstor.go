@@ -47,7 +47,6 @@ func DeleteFile(workDir string, filePath string) error {
 
 type MemoryStoragerInterface interface {
 	AddNewFileInfo(ctx context.Context, fileName string, filePath string, fileSize int64) error
-	GetFilePathByName(ctx context.Context, fileName string) (string, error)
 	DeleteFileInfoByFilePath(ctx context.Context, filePath string) error
 	RegisterNewUser(ctx context.Context, userName string, hash string) error
 	GetUserByName(ctx context.Context, userName string) (DBUser, error)

@@ -82,12 +82,6 @@ func (d *DBStorage) AddNewFileInfo(ctx context.Context, fileName string, filePat
 	return err
 }
 
-func (d *DBStorage) GetFilePathByName(ctx context.Context, fileName string) (string, error) {
-	var filePath string
-	err := d.DB.QueryRow(`SELECT filepath FROM Data WHERE filename = $1;`, fileName).Scan(&filePath)
-	return filePath, err
-}
-
 func (d *DBStorage) DeleteFileInfoByFilePath(ctx context.Context, filePath string) error {
 	_, err := d.DB.ExecContext(ctx, `DELETE FROM data WHERE filepath = $1;`, filePath)
 	return err
@@ -107,7 +101,7 @@ func (d *DBStorage) GetUserByName(ctx context.Context, userName string) (DBUser,
 func (d *DBStorage) GetAllFileInfo(ctx context.Context) ([]DBData, error) {
 	var dbDatas []DBData
 	var dbData DBData
-	selectQuery := `SELECT filename, filepath, filesize FROM Data;`
+	selectQuery := `SELECT filename, filepath, filesize FROM Data ORDER BY filename asc;`
 	rows, err := d.DB.QueryContext(ctx, selectQuery)
 	if err != nil {
 		return dbDatas, err
