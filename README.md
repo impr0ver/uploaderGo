@@ -5,10 +5,10 @@
 
 Список команд сервиса:
 
-TlQ1iuePre4AAAAAAAAAAdwpyxIBLy4hAYFPqYQsqNpitL2oMc_LH_Nzsh5tUvvT - токен который выдается при создании и настройке облачного хранилища DropBox. Токен нельзя терять, без него не получить временный токен доступа - access token!
+DTlQ1iuePre4AAAAAAAAAAdwpyxIBLy4hAYFPqYQsqNpitL2oMc_LH_Nzsh5tUvvT - токен который выдается при создании и настройке облачного хранилища DropBox. Токен нельзя терять, без него не получить временный токен доступа - access token!
 # Список файлов в облаке DropBox
 ```
-go run main.go -token=TlQ1iuePre4AAAAAAAAAAdwpyxIBLy4hAYFPqYQsqNpitL2oMc_LH_Nzsh5tUvvT -listcloud
+go run main.go -token=DTlQ1iuePre4AAAAAAAAAAdwpyxIBLy4hAYFPqYQsqNpitL2oMc_LH_Nzsh5tUvvT -listcloud
 
 List folder status code: 200 OK
 File name: myfile.txt, Cloud path: /data/myfile.txt, size: 18
@@ -21,15 +21,15 @@ File name: myfile8.txt, Cloud path: /data/myfile8.txt, size: 18
 ```
 # Удаление файла в облаке DropBox
 ```
-go run main.go -token=TlQ1iuePre4AAAAAAAAAAdwpyxIBLy4hAYFPqYQsqNpitL2oMc_LH_Nzsh5tUvvT -delete=/data/myfile8.txt
+go run main.go -token=DTlQ1iuePre4AAAAAAAAAAdwpyxIBLy4hAYFPqYQsqNpitL2oMc_LH_Nzsh5tUvvT -delete=/data/myfile8.txt
 
 Delete file "/data/myfile8.txt" status code: 200 OK
 ```
 # Загрузка файлов в облако DropBox
 ```
-go run main.go -token=TlQ1iuePre4AAAAAAAAAAdwpyxIBLy4hAYFPqYQsqNpitL2oMc_LH_Nzsh5tUvvT
+go run main.go -token=DTlQ1iuePre4AAAAAAAAAAdwpyxIBLy4hAYFPqYQsqNpitL2oMc_LH_Nzsh5tUvvT
 или в режиме шифрования AES-256-CBC
-go run main.go -token=TlQ1iuePre4AAAAAAAAAAdwpyxIBLy4hAYFPqYQsqNpitL2oMc_LH_Nzsh5tUvvT -key=<secret_key>
+go run main.go -token=DTlQ1iuePre4AAAAAAAAAAdwpyxIBLy4hAYFPqYQsqNpitL2oMc_LH_Nzsh5tUvvT -key=<secret_key>
 
 Work with cloud storage DropBox...
 New accessToken: sl.Bw0Q2-J8VwDD2UA612wlvDbaEqhg1LQ37-54yLyrnP-hB6euRPDObRHDII2xccgycz39JL7G_ODEe3DWttx8Yw3kacyVWyrf...
